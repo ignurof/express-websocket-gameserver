@@ -1,0 +1,25 @@
+{
+  "name": "express-websocket-gameserver",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ignurof/express-websocket-gameserver.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ignurof/express-websocket-gameserver/issues"
+  },
+  "homepage": "https://github.com/ignurof/express-websocket-gameserver#readme",
+  "dependencies": {
+    "@gd-com/utils": "^4.1.2",
+    "express": "^4.17.1",
+    "uuid": "^8.3.2",
+    "ws": "^8.3.0"
+  }
+}
