@@ -11,7 +11,8 @@ const add = (id) => {
         "y": 30,
         "anim": "nameHere",
         "flipH": false,
-        "attacking": false
+        "attacking": false,
+        "hp": 100
     };
     players.push(player);
 }
@@ -28,8 +29,17 @@ const update = (id, nX, nY, nAnim, nFlipH, nAttacking) => {
     });
 }
 
+const attack = (id) => {
+    players.forEach(v => {
+        if(v.id === id){
+            v.hp -= 10;
+        }
+    })
+}
+
 module.exports = {
     get,
     add,
-    update
+    update,
+    attack
 }

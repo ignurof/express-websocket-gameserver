@@ -72,7 +72,7 @@ wss.on('connection', socket => {
                 recieve.value.movement.flipH, 
                 recieve.value.movement.attacking
             );
-            
+
             // Refresh clients movement
             serverData.movement.data = playerlist.get();
             wss.clients.forEach((client) => {
@@ -81,6 +81,38 @@ wss.on('connection', socket => {
                     console.log("Client pos updated");
                 }
             });
+        }
+
+        if(recieve.value.network.func === "attack"){
+            playerlist.attack(recieve.value.network.data);
+            // Enable attacking on the client that started attacking
+            playerlist.update(
+                recieve.value.id, 
+                recieve.value.movement.x, 
+                recieve.value.movement.y, 
+                recieve.value.movement.anim, 
+                recieve.value.movement.flipH, 
+                recieve.value.movement.attacking
+            );
+
+            // Refresh clients
+            serverData.movement.data = playerlist.get();
+            wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(gdCom.putVar(serverData));
+                    console.log("Client pos updated");
+                }
+            });
+
+            // Disable attacking on the client that started attacking
+            playerlist.update(
+                recieve.value.id, 
+                recieve.value.movement.x, 
+                recieve.value.movement.y, 
+                recieve.value.movement.anim, 
+                recieve.value.movement.flipH, 
+                false // attack
+            );
         }
 
         //const buffer = gdCom.putVar(serverData);
