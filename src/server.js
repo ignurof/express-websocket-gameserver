@@ -26,6 +26,7 @@ let serverData = {
         "data": "dataObjHere"
     },
 	"movement": {
+        "data": playerlist.get(),
         "x": 0,
         "y": 0
     }
@@ -59,6 +60,28 @@ wss.on('connection', socket => {
         const recieveBuff = Buffer.from(message);
         const recieve = gdCom.getVar(recieveBuff);
         console.log(recieve.value);
+
+        // Recieve movement positions from client, send updates to other clients
+        if(recieve.value.network.func === "clientPos"){
+            // Update player client positions
+            playerlist.update(
+                recieve.value.id, 
+                recieve.value.movement.x, 
+                recieve.value.movement.y, 
+                recieve.value.movement.anim, 
+                recieve.value.movement.flipH, 
+                recieve.value.movement.attacking
+            );
+            
+            // Refresh clients movement
+            serverData.movement.data = playerlist.get();
+            wss.clients.forEach((client) => {
+                if (client.readyState === WebSocket.OPEN) {
+                    client.send(gdCom.putVar(serverData));
+                    console.log("Client pos updated");
+                }
+            });
+        }
 
         //const buffer = gdCom.putVar(serverData);
         //socket.send(buffer);
