@@ -1,8 +1,11 @@
 // Required dependency
 const express = require("express");
-const WebSocket = require('ws')
-const gdCom = require('@gd-com/utils')
-const { v4 } = require('uuid')
+const WebSocket = require('ws');
+const gdCom = require('@gd-com/utils');
+const { v4 } = require('uuid');
+
+// Internal dependency
+const playerlist = require("./playerlist.js");
 
 // Application
 let app = express();
@@ -29,16 +32,27 @@ let serverData = {
 }
 
 wss.on('connection', socket => {
-    let uuid = v4()
-    console.log(`[${uuid}] Connected`)
-    // Add to list
-    playerlist.Add(uuid);
-    // Update server obj to send
+    let uuid = v4();
+    console.log(`[${uuid}] Connected`);
+    // add client to list
+    playerlist.add(uuid);
+    // Update server obj to send. Here I set the server function to send back to client on its first connection to the server
     serverData.network.func = "clientConnect";
     serverData.network.data = uuid;
     // Send UUID for client id
     let firstBuffer = gdCom.putVar(serverData);
     socket.send(firstBuffer);
+
+    // Tell all clients to spawn in the new player
+    serverData.network.func = "spawnPlayers";
+    serverData.network.data = playerlist.get();
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(gdCom.putVar(serverData));
+            console.log("Spawning in new player on client");
+        }
+    });
+    serverData.network.func = "reset";
 
     // When server recieve message from client (socket), run the callback
     socket.on('message', (message) => {
