@@ -113,6 +113,20 @@ wss.on('connection', socket => {
                 recieve.value.movement.flipH, 
                 false // attack
             );
+
+            // Respawn player if it died
+            if(playerlist.isDead(recieve.value.network.data)){
+                playerlist.heal(recieve.value.network.data);
+
+                // Refresh clients
+                serverData.movement.data = playerlist.get();
+                wss.clients.forEach((client) => {
+                    if (client.readyState === WebSocket.OPEN) {
+                        client.send(gdCom.putVar(serverData));
+                        console.log("Client pos updated");
+                    }
+                });
+            }
         }
 
         //const buffer = gdCom.putVar(serverData);

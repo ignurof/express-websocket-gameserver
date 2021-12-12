@@ -37,9 +37,33 @@ const attack = (id) => {
     })
 }
 
+const isDead = (id) => {
+    let value = false;
+    players.forEach(v => {
+        if(v.id === id){
+            if(v.hp <= 0){
+                value = true;
+            }
+        }
+    })
+    return value;
+}
+
+const heal = (id) => {
+    players.forEach(v => {
+        if(v.id === id){
+            v.hp = 100;
+            v.x = 30;
+            v.y = 30;
+        }
+    })
+}
+
 module.exports = {
     get,
     add,
     update,
-    attack
+    attack,
+    isDead,
+    heal
 }
