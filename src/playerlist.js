@@ -18,45 +18,43 @@ const add = (id) => {
 }
 
 const update = (id, nX, nY, nAnim, nFlipH, nAttacking) => {
-    players.forEach(v => {
-        if(v.id === id){
-            v.x = nX;
-            v.y = nY;
-            v.anim = nAnim;
-            v.flipH = nFlipH;
-            v.attacking = nAttacking;
-        }
+    players.map(v => {
+        if(v.id !== id) return;
+
+        v.x = nX;
+        v.y = nY;
+        v.anim = nAnim;
+        v.flipH = nFlipH;
+        v.attacking = nAttacking;
     });
 }
 
 const attack = (id) => {
-    players.forEach(v => {
-        if(v.id === id){
-            v.hp -= 10;
-        }
-    })
+    players.map(v => {
+        if(v.id !== id) return;
+
+        v.hp -= 10;
+    });
 }
 
 const isDead = (id) => {
     let value = false;
-    players.forEach(v => {
-        if(v.id === id){
-            if(v.hp <= 0){
-                value = true;
-            }
-        }
-    })
+    players.map(v => {
+        if(v.id !== id) return;
+
+        if(v.hp <= 0) value = true;
+    });
     return value;
 }
 
 const heal = (id) => {
-    players.forEach(v => {
-        if(v.id === id){
-            v.hp = 100;
-            v.x = 30;
-            v.y = 30;
-        }
-    })
+    players.map(v => {
+        if(v.id !== id) return;
+
+        v.hp = 100;
+        v.x = 30;
+        v.y = 30;
+    });
 }
 
 module.exports = {
